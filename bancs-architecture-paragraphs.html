@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TCS BaNCS — Trade Finance Modernization Architecture</title>
+<style>
+  body{
+    background:#0f1420;
+    color:#e6e9f0;
+    font-family:'Georgia', 'Times New Roman', serif;
+    line-height:1.8;
+    margin:0;
+    padding:60px 20px;
+  }
+  .container{
+    max-width:760px;
+    margin:0 auto;
+    background:#161c2c;
+    border:1px solid #2a3350;
+    border-radius:8px;
+    padding:50px 56px;
+  }
+  h1{
+    font-family:'Segoe UI', Arial, sans-serif;
+    font-size:26px;
+    color:#d4a24c;
+    margin-bottom:8px;
+    border-bottom:2px solid #2a3350;
+    padding-bottom:16px;
+  }
+  .subtitle{
+    font-family:'Segoe UI', Arial, sans-serif;
+    font-size:13px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:#8b93ac;
+    margin-bottom:30px;
+  }
+  p{
+    font-size:17px;
+    color:#d6dae4;
+    margin-bottom:22px;
+    text-align:justify;
+  }
+  p:last-child{margin-bottom:0;}
+  strong{color:#4fd1c5;}
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Project Architecture</h1>
+    <div class="subtitle">TCS BaNCS — Trade Finance Modernization</div>
+
+    <p>In my current project at <strong>TCS BaNCS</strong>, the original application is built on a Struts framework and follows a monolithic layered architecture. Most of the trade finance functionality was developed in Struts, so the presentation layer, business layer, and database layer are tightly coupled.</p>
+
+    <p>From the last financial year, our organization started a modernization initiative to migrate selected trade finance modules to Spring Boot microservices, and I have been involved in that migration. We are following the <strong>Strangler Fig Pattern</strong>, which means we are not rewriting the entire monolithic application at once. Instead, we are gradually replacing individual modules with Spring Boot microservices. Because of this, both the legacy Struts application and the new microservices currently coexist, which allows us to modernize the application without affecting existing banking operations.</p>
+
+    <p>The new architecture starts with a React-based frontend. When a user performs an operation, such as creating or updating a Letter of Credit, the request first goes to an <strong>API Gateway</strong>. The API Gateway handles routing, authentication, authorization, and logging. We use Spring Security with JWT, so the gateway validates the token and the user's permissions before forwarding the request to the appropriate microservice.</p>
+
+    <p>Inside each microservice, we follow a layered architecture with Controller, Service, Repository, and Database layers. The Service layer contains the business logic, and the Repository layer interacts with Oracle or PostgreSQL using Spring Data JPA and Hibernate.</p>
+
+    <p>For audit logging, notifications, document generation, and reporting, we use <strong>Kafka</strong>. After the main transaction is completed, the service publishes an event to Kafka, and separate consumer services process those tasks asynchronously. This reduces response time and allows services to scale independently.</p>
+
+    <p>For monitoring and debugging, we use <strong>OpenTelemetry</strong> for distributed tracing. A Trace ID is generated and propagated across all microservices, which helps us trace a request end-to-end and quickly identify production issues.</p>
+
+    <p>For deployment, each microservice is packaged using <strong>Docker</strong> and deployed through <strong>Jenkins CI/CD pipelines</strong>. Since each service is independently deployable, we can release one module without impacting the others.</p>
+
+    <p>Overall, our architecture is a hybrid of the legacy Struts monolith and Spring Boot microservices, and using the Strangler Fig Pattern has allowed us to gradually modernize the application while maintaining the stability required for a banking product like TCS BaNCS.</p>
+  </div>
+</body>
+</html>
